@@ -6,6 +6,7 @@ export type { Language, INumberToWords };
 export const LANGUAGES = {
   ENGLISH: 'en' as const,
   ROMANIAN: 'ro' as const,
+  SPANISH: 'es' as const,
 } as const;
 
 function numberToWords(numStr: string, language: Language = 'en'): string {

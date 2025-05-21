@@ -26,7 +26,8 @@ describe('NumberToWordsFactory', () => {
       const languages = NumberToWordsFactory.getSupportedLanguages();
       expect(languages).toContain('en');
       expect(languages).toContain('ro');
-      expect(languages.length).toBe(2);
+      expect(languages).toContain('es');
+      expect(languages.length).toBe(3);
     });
   });
 
@@ -34,6 +35,7 @@ describe('NumberToWordsFactory', () => {
     it('should correctly identify supported languages', () => {
       expect(NumberToWordsFactory.isLanguageSupported('en')).toBe(true);
       expect(NumberToWordsFactory.isLanguageSupported('ro')).toBe(true);
+      expect(NumberToWordsFactory.isLanguageSupported('es')).toBe(true);
     });
 
     it('should correctly identify unsupported languages', () => {

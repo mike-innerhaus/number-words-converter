@@ -1,7 +1,7 @@
 /**
  * Supported languages
  */
-export type Language = 'en' | 'ro';
+export type Language = 'en' | 'ro' | 'es';
 
 /**
  * Interface for number to words converters

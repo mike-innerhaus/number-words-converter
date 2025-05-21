@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/mike-innerhaus/number-words-converter/actions/workflows/test.yml/badge.svg)](https://github.com/mike-innerhaus/number-words-converter/actions)
 [![codecov](https://codecov.io/gh/mike-innerhaus/number-words-converter/graph/badge.svg)](https://codecov.io/gh/mike-innerhaus/number-words-converter)
 
-A lightweight, zero-dependency TypeScript library for converting numbers to words in multiple languages. Currently supports English and Romanian.
+A lightweight, zero-dependency TypeScript library for converting numbers to words in multiple languages. Currently supports English, Romanian, and Spanish.
 
 ## Features
 
@@ -47,12 +47,17 @@ const words2 = numberToWords(123.45, LANGUAGES.ENGLISH); // "one hundred twenty-
 // Romanian
 const words3 = numberToWords(42, LANGUAGES.ROMANIAN); // "patruzeci și doi"
 const words4 = numberToWords('123.45', LANGUAGES.ROMANIAN); // "o sută douăzeci și trei virgulă patruzeci și cinci"
+
+// Spanish
+const words5 = numberToWords(42, LANGUAGES.SPANISH); // "cuarenta y dos"
+const words6 = numberToWords('123.45', LANGUAGES.SPANISH); // "ciento veintitrés coma cuatro cinco"
 ```
 
 ### Available Languages
 
 - `LANGUAGES.ENGLISH` - English (default)
 - `LANGUAGES.ROMANIAN` - Romanian (Română)
+- `LANGUAGES.SPANISH` - Spanish (Español)
 
 ### API Reference
 

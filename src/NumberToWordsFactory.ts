@@ -1,6 +1,7 @@
 import { INumberToWords, Language } from './core/types';
 import { EnglishNumberToWords } from './languages/en/EnglishNumberToWords';
 import { RomanianNumberToWords } from './languages/ro/RomanianNumberToWords';
+import { SpanishNumberToWords } from './languages/es/SpanishNumberToWords';
 
 type Constructor<T extends INumberToWords> = new () => T;
 
@@ -15,6 +16,7 @@ export class NumberToWordsFactory {
   private static readonly converters: LanguageMap = {
     en: EnglishNumberToWords,
     ro: RomanianNumberToWords,
+    es: SpanishNumberToWords,
   };
   
   static createConverter<T extends INumberToWords = INumberToWords>(
