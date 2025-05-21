@@ -14,7 +14,8 @@ A lightweight, zero-dependency TypeScript library for converting numbers to word
 - ✅ Handles negative numbers and zero
 - ✅ TypeScript support out of the box
 - ✅ Zero runtime dependencies
-- ✅ Comprehensive test coverage (>95%)
+- ✅ Accurate handling of very large numbers (up to decillions and beyond) using BigInt.
+- ✅ Comprehensive test coverage (~98%)
 - ✅ Works in both Node.js and browser environments
 
 ## Requirements
@@ -98,8 +99,11 @@ numberToWords('1.234,56', LANGUAGES.ROMANIAN); // EU format
 // Negative numbers
 numberToWords(-42); // "minus forty-two"
 
-// Large numbers
+// Large numbers (BigInt support)
 numberToWords(1000000); // "one million"
+numberToWords(1_000_000_000_000_000_000n, LANGUAGES.ENGLISH); // "one quintillion"
+// For Romanian, it also supports very large numbers:
+numberToWords('1000000000000000000000000000000000', LANGUAGES.ROMANIAN); // "un decilion"
 ```
 
 ## Development
@@ -171,47 +175,3 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 - Thanks to all contributors who help improve this project
 - Inspired by various number-to-words implementations
-
-### Prerequisites
-
-- Node.js (v14 or later)
-- npm or yarn
-
-### Setup
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn
-   ```
-
-### Building
-
-```bash
-npm run build
-```
-
-### Testing
-
-```bash
-# Run tests once
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-```
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- Inspired by various number-to-words implementations
-- Special thanks to all contributors

@@ -79,8 +79,9 @@ describe('numberToWords - Edge Cases', () => {
   });
 
   it('should handle very large numbers', () => {
-    expect(numberToWords('1000000000000', LANGUAGES.ROMANIAN)).toBe('peste limita');
+    expect(numberToWords('1000000000000', LANGUAGES.ROMANIAN)).toBe('un trilion');
     expect(numberToWords('1000000000000', LANGUAGES.ENGLISH)).toMatch(/trillion/);
+    expect(numberToWords('10000000000000000000000000000000000', LANGUAGES.ROMANIAN)).toBe('peste limita');
   });
 
   it('should handle decimals with only zeros', () => {

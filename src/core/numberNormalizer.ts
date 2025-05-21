@@ -33,7 +33,10 @@ export class NumberNormalizer {
       normalized = normalized.substring(1).trim();
     }
 
-    if (!/^[\d\s,.]+$/.test(normalized)) {
+    const validCharsRegex = this.options.allowScientificNotation 
+      ? /^[\d\s,eE.+-]+$/ 
+      : /^[\d\s,.]+$/;
+    if (!validCharsRegex.test(normalized)) {
       throw new Error('Invalid characters in number string');
     }
 

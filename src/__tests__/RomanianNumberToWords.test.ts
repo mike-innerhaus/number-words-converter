@@ -80,7 +80,7 @@ describe('RomanianNumberToWords', () => {
       const originalParseInt = global.parseInt;
       try {
         global.parseInt = jest.fn().mockImplementation(() => { throw new Error('Parse error'); });
-        expect(converter.convert('123')).toBe('NaN');
+        expect(converter.convert('0.abc')).toBe('NaN');
       } finally {
         global.parseInt = originalParseInt;
       }
@@ -111,42 +111,30 @@ describe('RomanianNumberToWords', () => {
 
   describe('Initial decimal words', () => {
     it('should handle initial decimal words correctly', () => {
-      expect((converter as any).generateRomanianWords(0, [], 'test')).toBe('test');
+      expect((converter as any).generateRomanianWords(0n, [], 'test')).toBe('test');
     });
   });
 
   describe('Negative numbers', () => {
     it('should handle negative numbers in generateRomanianWords', () => {
-      expect((converter as any).generateRomanianWords(-5)).toContain('minus');
-      expect((converter as any).generateRomanianWords(-42)).toContain('minus');
+      expect((converter as any).generateRomanianWords(-5n)).toContain('minus');
+      expect((converter as any).generateRomanianWords(-42n)).toContain('minus');
     });
   });
 
   describe('Number limits', () => {
-    it('should return "peste limita" for numbers above trillion', () => {
-      expect(converter.convert('1000000000000')).toBe('peste limita');
-      expect(converter.convert('9999999999999')).toBe('peste limita');
+    it('should return scale words up to decillion, and "peste limita" only for numbers above decillion', () => {
+      expect(converter.convert('1000000000000')).toBe('un trilion');
+      expect(converter.convert('9999999999999')).toBe('nouă trilioane nouă sute nouăzeci și nouă de miliarde nouă sute nouăzeci și nouă de milioane nouă sute nouăzeci și nouă de mii nouă sute nouăzeci și nouă');
+      expect(converter.convert('10000000000000000000000000000000000')).toBe('peste limita');
     });
-    
-    it('should directly set "peste limita" in generateRomanianWords (lines 182-183)', () => {
-      expect((converter as any).generateRomanianWords(1e12)).toBe('peste limita');
-      expect((converter as any).generateRomanianWords(5e12)).toBe('peste limita');
-      
-      const ONE_TRILLION = 1000000000000;
-      
-      
-      class TestSubclass extends RomanianNumberToWords {
-        testDefaultCase() {
-          const result = this.generateRomanianWords(ONE_TRILLION * 2); 
-          return { result, defaultCaseHit: result === 'peste limita' };
-        }
-      }
-      
-      const testInstance = new TestSubclass();
-      const { result, defaultCaseHit } = testInstance.testDefaultCase();
-      
-      expect(result).toBe('peste limita');
-      expect(defaultCaseHit).toBe(true);
+
+    it('should directly set scale words in generateRomanianWords up to decillion, "peste limita" above', () => {
+      expect((converter as any).generateRomanianWords(1_000_000_000_000n)).toBe('un trilion');
+      expect((converter as any).generateRomanianWords(5_000_000_000_000n)).toBe('cinci trilioane');
+      const ONE_DECILLION = 1000000000000000000000000000000000n;
+      expect((converter as any).generateRomanianWords(ONE_DECILLION)).toBe('un decilion');
+      expect((converter as any).generateRomanianWords(ONE_DECILLION + 1n)).toBe('peste limita');
     });
   });
 
@@ -174,11 +162,34 @@ describe('RomanianNumberToWords', () => {
 
   describe('Romanian scale matching', () => {
     it('should handle singular and plural forms correctly', () => {
-      expect((converter as any).matchRomanian(1, 'un milion', 'milioane')).toBe('un milion');
-      expect((converter as any).matchRomanian(2, 'un milion', 'milioane')).toBe('două milioane');
-      expect((converter as any).matchRomanian(5, 'un milion', 'milioane')).toBe('cinci milioane');
-      expect((converter as any).matchRomanian(21, 'un milion', 'milioane')).toBe('douăzeci și unu de milioane');
-      expect((converter as any).matchRomanian(22, 'un milion', 'milioane')).toBe('douăzeci și două de milioane');
+      expect((converter as any).matchRomanian(1n, 'un milion', 'milioane')).toBe('un milion');
+      expect((converter as any).matchRomanian(2n, 'un milion', 'milioane')).toBe('două milioane');
+      expect((converter as any).matchRomanian(5n, 'un milion', 'milioane')).toBe('cinci milioane');
+      expect((converter as any).matchRomanian(21n, 'un milion', 'milioane')).toBe('douăzeci și unu de milioane');
+      expect((converter as any).matchRomanian(22n, 'un milion', 'milioane')).toBe('douăzeci și două de milioane');
+    });
+  });
+
+  describe('Romanian large scale matching', () => {
+    it('should handle larger scales correctly', () => {
+      expect((converter as any).matchRomanian(1n, 'un cvadrilion', 'cvadrilioane')).toBe('un cvadrilion');
+      expect((converter as any).matchRomanian(2n, 'un cvadrilion', 'cvadrilioane')).toBe('două cvadrilioane');
+      expect((converter as any).matchRomanian(1n, 'un sextilion', 'sextilioane')).toBe('un sextilion');
+      expect((converter as any).matchRomanian(3n, 'un sextilion', 'sextilioane')).toBe('trei sextilioane');
+    });
+  });
+
+  describe('Romanian large numbers conversion', () => {
+    it('should convert quadrillions and handle over-limit correctly', () => {
+      expect(converter.convert('1000000000000000')).toBe('un cvadrilion');
+      expect(converter.convert('2000000000000000')).toBe('două cvadrilioane');
+      expect(converter.convert('1000000000000000000')).toBe('un cvintilion');
+      expect(converter.convert('1000000000000000000000')).toBe('un sextilion');
+      expect(converter.convert('1000000000000000000000000')).toBe('un septilion');
+      expect(converter.convert('1000000000000000000000000000')).toBe('un octilion');
+      expect(converter.convert('1000000000000000000000000000000')).toBe('un nonilion');
+      expect(converter.convert('1000000000000000000000000000000000')).toBe('un decilion');
+      expect(converter.convert('10000000000000000000000000000000000')).toBe('peste limita');
     });
   });
 });

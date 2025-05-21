@@ -39,7 +39,7 @@ describe('NumberNormalizer', () => {
     });
   });
 
-  describe.skip('Scientific notation', () => {
+  describe('Scientific notation', () => {
     it('should handle scientific notation when enabled', () => {
       const normalizer = new NumberNormalizer({ allowScientificNotation: true });
       expect(normalizer.normalize('1.2e3').value).toBe(1200);
@@ -48,12 +48,17 @@ describe('NumberNormalizer', () => {
 
     it('should throw error for invalid scientific notation', () => {
       const normalizer = new NumberNormalizer({ allowScientificNotation: true });
-      expect(() => normalizer.normalize('1.2eZ')).toThrow('Invalid scientific notation');
+      expect(() => normalizer.normalize('1.2eZ')).toThrow('Invalid characters in number string');
     });
 
     it('should treat scientific notation as invalid characters when not enabled', () => {
       const normalizer = new NumberNormalizer({ allowScientificNotation: false });
       expect(() => normalizer.normalize('1.2e3')).toThrow('Invalid characters in number string');
+    });
+
+    it('should handle scientific notation resulting in Infinity by throwing Invalid integer part', () => {
+      const normalizerSci = new NumberNormalizer({ allowScientificNotation: true });
+      expect(() => normalizerSci.normalize('1e500')).toThrow('Invalid integer part');
     });
   });
   
@@ -130,6 +135,11 @@ describe('NumberNormalizer', () => {
         }
       }).toThrow('Invalid decimal part');
     });
+
+    it('should throw for non-digit characters in decimal part (e.g. space)', () => {
+      const normalizer = new NumberNormalizer();
+      expect(() => normalizer.normalize('123.4 5')).toThrow('Invalid decimal part');
+    });
   });
   
   describe('Number format detection', () => {
@@ -189,6 +199,12 @@ describe('NumberNormalizer', () => {
       const result = normalizer.normalize('0000');
       expect(result.integerPart).toBe('0');
       expect(result.value).toBe(0);
+    });
+
+    it('should throw for invalid integer part after stripping (e.g. only separators)', () => {
+      const normalizer = new NumberNormalizer();
+      expect(() => normalizer.normalize(',')).toThrow('Invalid integer part');
+      expect(() => normalizer.normalize(' . ')).toThrow('Invalid integer part');
     });
   });
 });
